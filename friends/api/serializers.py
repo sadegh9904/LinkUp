@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from friends.models import FriendRequest
+from friends.models import FriendRequest,Messages
 from users .models import CustomUser
 
 
@@ -50,4 +50,13 @@ class FriendListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ['id', 'display_name', 'email', 'firends']
+        fields = ['id', 'display_name', 'email', 'friends']
+        
+        
+        
+class MessagesSerializzer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Messages
+        fields = ['id', 'sender', 'receiver', 'text', 'timestamps']
+        read_only_fields = ['sender', 'timestamps']
