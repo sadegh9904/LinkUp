@@ -1,6 +1,8 @@
 from rest_framework import generics,status
+from rest_framework.validators import ValidationError
 from friends.api import serializers
 from friends.models import FriendRequest
+from users.models import CustomUser
 from serializers import FriendRequestSerializer,SendFriendRequestSerializer,FriendListSerializer,UserMiniSerializer,MessagesSerializzer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -102,9 +104,18 @@ class MessagesListView(generics.ListAPIView):
     serializer_class = MessagesSerializzer
     
     
-        sender = self.request.user
-        receiver = serializer.validated_data['receiver']
     def get_queryset(self):
+        sender = self.request.user
+        reciever_id = self.request.query_params.get('receiver')
+        
+        if not reciever_id:
+            raise ValidationError("Receiver id is required!")
+        
+        try:
+            reciever = CustomUser.objects.get(id=reciever_id)
+            
+        except CustomUser.DoesNotExist:
+            raise ValidationError("Receiver not found!")
         
         return 
     
